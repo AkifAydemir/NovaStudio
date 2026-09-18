@@ -25,6 +25,23 @@ Genel amaçlı bir IDE veya ISO C standardına bütünüyle uyan bir toolchain o
 - Proje dosyalarını, fonksiyonları, global değişkenleri, declaration’ları, include/call ilişkilerini ve etkin çalışma yolunu bağlayan canlı grafik.
 - Uyarıların hata sayıldığı build’de çalışan 22 native/compiler regresyon testi.
 
+## Çalışma ortamı nasıl kuruldu?
+
+Proje, native toolchain ile masaüstü arayüzü arasında bilinçli bir sınıra
+ayrılır. `compiler/`, repodaki çok dosyalı C workspace’inden bytecode ve
+kaynak/debug metadata’sı üretir; `native/` bytecode’u C ABI üzerinden
+çalıştırır; `studio/` ise ikisini WPF ve P/Invoke ile görünür kılar. Arayüz,
+programın ayrı hazırlanmış bir çizimi değil, toolchain’in gerçek durumuna
+bağlıdır.
+
+Buradaki temel karar aynı metadata’yı farklı görünümlerde kullanmaktır.
+Derleme sonucu debugger’ın sembol ve source map bilgilerini, grafiğin de
+dosya, fonksiyon, include ve call ilişkilerini besler. Çalışma sırasında VM
+durumu etkin yolu, register’ları, stack’i, belleği ve disassembly’yi ekler.
+Böylece küçük bir örnek, kaynak koddan runtime’a uzanan zinciri incelemek
+için yeterli olur. Sabit kapasiteler ve desteklenmeyen C özellikleri açıkça
+belirtilir; tam dil uyumu ima edilmez.
+
 ## Sisteme genel bakış
 
 ```mermaid

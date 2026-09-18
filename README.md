@@ -38,6 +38,22 @@ memory, and control flow.
   includes, calls, and the active runtime path.
 - 22 native/compiler regression tests built with warnings treated as errors.
 
+## How the workbench is put together
+
+The project is split at a deliberate native/desktop boundary. `compiler/`
+turns the included multi-file C workspace into bytecode and source/debug
+metadata; `native/` executes that bytecode through a C ABI; `studio/` presents
+both through WPF and P/Invoke. The UI is a view of the toolchain's state, not a
+separate visual model of a program.
+
+That shared metadata is the key implementation decision. A build supplies the
+symbols and source mappings used by the debugger as well as the file, function,
+include, and call relationships used by the graph. During execution, VM state
+adds the active path, registers, stack, memory, and disassembly. Keeping these
+views tied to the same compiled workspace makes a small sample useful for
+inspecting the entire source-to-runtime path. Fixed capacities and unsupported
+C features remain explicit rather than suggesting full language conformance.
+
 ## System overview
 
 ```mermaid
