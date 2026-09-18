@@ -74,6 +74,43 @@ flowchart LR
 See [Architecture](docs/ARCHITECTURE.md) for the component boundaries and data
 flow.
 
+## Inside one build-and-debug cycle
+
+Opening a `.novaproj` file gives the Studio a concrete workspace: project-local
+C sources and headers plus saved graph positions. On **Build**, the WPF layer
+passes source buffers across the native ABI to NovaC. The frontend produces
+bytecode, diagnostics, symbols, source maps, and relationship records in one
+compilation. The graph is assembled from those records; it does not infer calls
+or includes from text shown in an editor. A failed or unsupported construct is
+reported at this compilation boundary instead of silently becoming a graph
+node or executable instruction.
+
+The resulting bytecode is loaded into a fresh NovaVM instance. The runtime has
+16 explicit 32-bit registers and a 1 MiB address space divided into regions
+for globals, heap, stack, and MMIO. Breakpoints and step commands advance this
+VM, while the Studio reads PC/SP/flags, call frames, memory, heap information,
+and runtime events through its public ABI. Console output is an MMIO event, so
+the UI can show it alongside the instruction and source location that produced
+it. Source maps join those runtime observations back to the compiler result.
+
+The architecture view therefore answers a different question from a static
+diagram: which file/function relationships were compiled, and which path is
+active *now*? The debugger answers what the VM is doing at that point. The
+included sample and 22 CTest cases make this interaction reproducible, while
+the stated language limits keep it distinct from a production C compiler.
+
+### Where to read the implementation
+
+| File | What to inspect |
+| --- | --- |
+| [`compiler/src/nova_compiler.c`](compiler/src/nova_compiler.c) | Multi-file frontend and bytecode/metadata production. |
+| [`compiler/include/nova_compiler.h`](compiler/include/nova_compiler.h) | Caller-facing compiler ABI and output contract. |
+| [`native/src/nova_vm.c`](native/src/nova_vm.c) | Instruction execution, runtime state, and debugger behavior. |
+| [`native/include/nova_vm.h`](native/include/nova_vm.h) | Public VM state and inspection ABI. |
+| [`studio/Services/NovaWorkspaceService.cs`](studio/Services/NovaWorkspaceService.cs) | Workspace compilation and native-to-WPF coordination. |
+| [`studio/MainWindow.xaml.cs`](studio/MainWindow.xaml.cs) | Desktop interaction and runtime views. |
+| [`compiler/tests/test_compiler.c`](compiler/tests/test_compiler.c) | Frontend regression cases. |
+
 ## A 60-second product tour
 
 1. Launch Nova Studio and open `examples/PersistentWorkspace/NovaDemo.novaproj`.

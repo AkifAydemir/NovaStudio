@@ -61,6 +61,44 @@ flowchart LR
 
 Bileşen sınırları ve veri akışı için [mimari notlarına](docs/ARCHITECTURE.md) bakın.
 
+## Bir build ve debug döngüsünün içinde
+
+Bir `.novaproj` dosyası açıldığında Studio; projeye ait C kaynaklarını,
+header’ları ve kayıtlı grafik konumlarını içeren somut bir workspace yükler.
+**Build** sırasında WPF katmanı kaynak buffer’larını native ABI üzerinden
+NovaC’ye iletir. Frontend aynı derlemede bytecode, tanılar, semboller, source
+map’ler ve ilişki kayıtları üretir. Grafik bu kayıtlardan kurulur; editördeki
+metne bakıp call veya include ilişkisi tahmin etmez. Desteklenmeyen bir yapı
+sessizce grafiğe ya da çalıştırılabilir koda dönüşmez, derleme sınırında
+bildirilir.
+
+Üretilen bytecode yeni bir NovaVM örneğine yüklenir. Runtime’da 16 adet açık
+32-bit register ve globals, heap, stack ile MMIO bölgelerine ayrılmış 1 MiB
+adres alanı vardır. Breakpoint ve step komutları VM’i ilerletirken Studio,
+PC/SP/flags durumunu, call frame’leri, belleği, heap bilgisini ve runtime
+olaylarını public ABI üzerinden okur. Konsol çıktısı MMIO olayı olarak
+modellendiğinden, arayüz çıktıyı onu üreten komut ve kaynak konumuyla
+birlikte gösterebilir. Source map’ler çalışma gözlemlerini derleme sonucuna
+geri bağlar.
+
+Mimari görünüm bu yüzden statik bir diyagramdan farklı bir soruyu yanıtlar:
+hangi dosya/fonksiyon ilişkileri derlendi ve *şu anda* hangi yol etkin?
+Debugger ise VM’in o noktada ne yaptığını gösterir. Dâhil edilen örnek ve 22
+CTest vakası bu etkileşimi tekrar üretilebilir kılar; belirtilen dil sınırları
+da projeyi üretim amaçlı bir C compiler’dan ayırır.
+
+### Kodu nereden okumalı?
+
+| Dosya | İncelenecek konu |
+| --- | --- |
+| [`compiler/src/nova_compiler.c`](compiler/src/nova_compiler.c) | Çok dosyalı frontend ve bytecode/metadata üretimi. |
+| [`compiler/include/nova_compiler.h`](compiler/include/nova_compiler.h) | Dışarıya açık compiler ABI’si ve çıktı sözleşmesi. |
+| [`native/src/nova_vm.c`](native/src/nova_vm.c) | Komut yürütme, runtime durumu ve debugger davranışı. |
+| [`native/include/nova_vm.h`](native/include/nova_vm.h) | Public VM durumu ve inceleme ABI’si. |
+| [`studio/Services/NovaWorkspaceService.cs`](studio/Services/NovaWorkspaceService.cs) | Workspace derlemesi ve native/WPF koordinasyonu. |
+| [`studio/MainWindow.xaml.cs`](studio/MainWindow.xaml.cs) | Masaüstü etkileşimi ve runtime görünümleri. |
+| [`compiler/tests/test_compiler.c`](compiler/tests/test_compiler.c) | Frontend regresyon vakaları. |
+
 ## 60 saniyelik ürün turu
 
 1. Nova Studio’yu başlatıp `examples/PersistentWorkspace/NovaDemo.novaproj` dosyasını açın.
