@@ -1,0 +1,149 @@
+set(CMAKE_C_STANDARD 11)
+set(CMAKE_C_STANDARD_REQUIRED ON)
+set(CMAKE_C_EXTENSIONS OFF)
+
+add_library(nova_compiler SHARED
+src/nova_compiler.c
+)
+target_include_directories(nova_compiler PUBLIC
+${CMAKE_CURRENT_SOURCE_DIR}/include
+${PROJECT_SOURCE_DIR}/native/include
+)
+target_link_libraries(nova_compiler PRIVATE nova_vm)
+set_target_properties(nova_compiler PROPERTIES
+RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
+RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_BINARY_DIR}"
+RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}"
+)
+if(MSVC)
+target_compile_options(nova_compiler PRIVATE /W4 /WX)
+else()
+target_compile_options(nova_compiler PRIVATE -Wall -Wextra -Wpedantic -Werror)
+endif()
+add_executable(novac cli/novac.c)
+target_link_libraries(novac PRIVATE nova_compiler)
+target_include_directories(novac PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
+set_target_properties(novac PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}")
+if(BUILD_TESTING)
+add_executable(nova_compiler_test tests/test_compiler.c)
+target_link_libraries(nova_compiler_test PRIVATE nova_compiler nova_vm)
+target_include_directories(nova_compiler_test PRIVATE
+${CMAKE_CURRENT_SOURCE_DIR}/include
+${PROJECT_SOURCE_DIR}/native/include
+)
+add_executable(nova_compiler_debug_info_test tests/test_debug_info.c)
+target_link_libraries(nova_compiler_debug_info_test PRIVATE nova_compiler nova_vm)
+target_include_directories(nova_compiler_debug_info_test PRIVATE
+${CMAKE_CURRENT_SOURCE_DIR}/include
+${PROJECT_SOURCE_DIR}/native/include
+)
+add_executable(nova_compiler_functions_test tests/test_functions.c)
+target_link_libraries(nova_compiler_functions_test PRIVATE nova_compiler nova_vm)
+target_include_directories(nova_compiler_functions_test PRIVATE
+${CMAKE_CURRENT_SOURCE_DIR}/include
+${PROJECT_SOURCE_DIR}/native/include
+)
+add_executable(nova_compiler_debug_steps_test tests/test_debug_steps.c)
+target_link_libraries(nova_compiler_debug_steps_test PRIVATE nova_compiler nova_vm)
+target_include_directories(nova_compiler_debug_steps_test PRIVATE
+${CMAKE_CURRENT_SOURCE_DIR}/include
+${PROJECT_SOURCE_DIR}/native/include
+)
+add_executable(nova_compiler_aggregates_test tests/test_aggregates.c)
+target_link_libraries(nova_compiler_aggregates_test PRIVATE nova_compiler nova_vm)
+target_include_directories(nova_compiler_aggregates_test PRIVATE
+${CMAKE_CURRENT_SOURCE_DIR}/include
+
+${PROJECT_SOURCE_DIR}/native/include
+)
+add_executable(nova_compiler_project_test tests/test_project.c)
+target_link_libraries(nova_compiler_project_test PRIVATE nova_compiler nova_vm)
+target_include_directories(nova_compiler_project_test PRIVATE
+${CMAKE_CURRENT_SOURCE_DIR}/include
+${PROJECT_SOURCE_DIR}/native/include
+)
+add_executable(nova_compiler_architecture_test tests/test_architecture.c)
+target_link_libraries(nova_compiler_architecture_test PRIVATE nova_compiler nova_vm)
+target_include_directories(nova_compiler_architecture_test PRIVATE
+${CMAKE_CURRENT_SOURCE_DIR}/include
+${PROJECT_SOURCE_DIR}/native/include
+)
+add_executable(nova_compiler_headers_test tests/test_headers.c)
+target_link_libraries(nova_compiler_headers_test PRIVATE nova_compiler nova_vm)
+target_include_directories(nova_compiler_headers_test PRIVATE
+${CMAKE_CURRENT_SOURCE_DIR}/include
+${PROJECT_SOURCE_DIR}/native/include
+)
+add_executable(nova_compiler_language_v14_test tests/test_language_v14.c)
+target_link_libraries(nova_compiler_language_v14_test PRIVATE nova_compiler nova_vm)
+target_include_directories(nova_compiler_language_v14_test PRIVATE
+${CMAKE_CURRENT_SOURCE_DIR}/include
+${PROJECT_SOURCE_DIR}/native/include
+)
+add_executable(nova_compiler_control_flow_v15_test tests/test_control_flow_v15.c)
+target_link_libraries(nova_compiler_control_flow_v15_test PRIVATE nova_compiler nova_vm)
+target_include_directories(nova_compiler_control_flow_v15_test PRIVATE
+${CMAKE_CURRENT_SOURCE_DIR}/include
+${PROJECT_SOURCE_DIR}/native/include
+)
+add_executable(nova_compiler_language_v16_test tests/test_language_v16.c)
+target_link_libraries(nova_compiler_language_v16_test PRIVATE nova_compiler nova_vm)
+target_include_directories(nova_compiler_language_v16_test PRIVATE
+${CMAKE_CURRENT_SOURCE_DIR}/include
+${PROJECT_SOURCE_DIR}/native/include
+)
+add_executable(nova_compiler_declarations_v17_test tests/test_declarations_v17.c)
+target_link_libraries(nova_compiler_declarations_v17_test PRIVATE nova_compiler nova_vm)
+target_include_directories(nova_compiler_declarations_v17_test PRIVATE
+${CMAKE_CURRENT_SOURCE_DIR}/include
+${PROJECT_SOURCE_DIR}/native/include
+)
+add_executable(nova_compiler_language_v18_test tests/test_language_v18.c)
+target_link_libraries(nova_compiler_language_v18_test PRIVATE nova_compiler nova_vm)
+target_include_directories(nova_compiler_language_v18_test PRIVATE
+${CMAKE_CURRENT_SOURCE_DIR}/include
+${PROJECT_SOURCE_DIR}/native/include
+)
+add_executable(nova_compiler_language_v19_test tests/test_language_v19.c)
+target_link_libraries(nova_compiler_language_v19_test PRIVATE nova_compiler nova_vm)
+target_include_directories(nova_compiler_language_v19_test PRIVATE
+${CMAKE_CURRENT_SOURCE_DIR}/include
+${PROJECT_SOURCE_DIR}/native/include
+)
+add_executable(nova_compiler_preprocessor_v20_test tests/test_preprocessor_v20.c)
+target_link_libraries(nova_compiler_preprocessor_v20_test PRIVATE nova_compiler nova_vm)
+target_include_directories(nova_compiler_preprocessor_v20_test PRIVATE
+${CMAKE_CURRENT_SOURCE_DIR}/include
+${PROJECT_SOURCE_DIR}/native/include
+)
+add_executable(nova_compiler_aggregates_v21_test tests/test_aggregates_v21.c)
+target_link_libraries(nova_compiler_aggregates_v21_test PRIVATE nova_compiler nova_vm)
+target_include_directories(nova_compiler_aggregates_v21_test PRIVATE
+${CMAKE_CURRENT_SOURCE_DIR}/include
+${PROJECT_SOURCE_DIR}/native/include
+)
+add_executable(nova_compiler_memory_types_test tests/test_memory_types.c)
+target_link_libraries(nova_compiler_memory_types_test PRIVATE nova_compiler nova_vm)
+target_include_directories(nova_compiler_memory_types_test PRIVATE
+${CMAKE_CURRENT_SOURCE_DIR}/include
+${PROJECT_SOURCE_DIR}/native/include
+)
+add_test(NAME nova_compiler COMMAND nova_compiler_test)
+add_test(NAME nova_compiler_debug_info COMMAND nova_compiler_debug_info_test)
+add_test(NAME nova_compiler_functions COMMAND nova_compiler_functions_test)
+add_test(NAME nova_compiler_debug_steps COMMAND nova_compiler_debug_steps_test)
+add_test(NAME nova_compiler_aggregates COMMAND nova_compiler_aggregates_test)
+add_test(NAME nova_compiler_project COMMAND nova_compiler_project_test)
+add_test(NAME nova_compiler_architecture COMMAND nova_compiler_architecture_test)
+
+add_test(NAME nova_compiler_headers COMMAND nova_compiler_headers_test)
+add_test(NAME nova_compiler_memory_types COMMAND nova_compiler_memory_types_test)
+add_test(NAME nova_compiler_language_v14 COMMAND nova_compiler_language_v14_test)
+add_test(NAME nova_compiler_control_flow_v15 COMMAND nova_compiler_control_flow_v15_test)
+add_test(NAME nova_compiler_language_v16 COMMAND nova_compiler_language_v16_test)
+add_test(NAME nova_compiler_declarations_v17 COMMAND nova_compiler_declarations_v17_test)
+add_test(NAME nova_compiler_language_v18 COMMAND nova_compiler_language_v18_test)
+add_test(NAME nova_compiler_language_v19 COMMAND nova_compiler_language_v19_test)
+add_test(NAME nova_compiler_preprocessor_v20 COMMAND nova_compiler_preprocessor_v20_test)
+add_test(NAME nova_compiler_aggregates_v21 COMMAND nova_compiler_aggregates_v21_test)
+endif()

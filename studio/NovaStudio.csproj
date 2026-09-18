@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+<PropertyGroup>
+<OutputType>WinExe</OutputType>
+<TargetFramework>net8.0-windows</TargetFramework>
+<UseWPF>true</UseWPF>
+<Nullable>enable</Nullable>
+<ImplicitUsings>enable</ImplicitUsings>
+<PlatformTarget>x64</PlatformTarget>
+<AssemblyName>NovaStudio</AssemblyName>
+<RootNamespace>NovaStudio</RootNamespace>
+<Version>0.21.0</Version>
+<FileVersion>0.21.0.0</FileVersion>
+<AssemblyVersion>0.21.0.0</AssemblyVersion>
+<InformationalVersion>0.21.0</InformationalVersion>
+<Product>Nova Studio</Product>
+<AssemblyTitle>Nova Studio - Living Architecture C Development Studio</AssemblyTitle>
+<Description>Living architecture C development studio</Description>
+</PropertyGroup>
+<ItemGroup>
+<None Include="..\build\nova_vm.dll" Link="nova_vm.dll" CopyToOutputDirectory="PreserveNewest" Condition="Exists('..\build\nova_vm.dll')" />
+<None Include="..\build\nova_compiler.dll" Link="nova_compiler.dll" CopyToOutputDirectory="PreserveNewest" Condition="Exists('..\build\nova_compiler.dll')" />
+</ItemGroup>
+</Project>

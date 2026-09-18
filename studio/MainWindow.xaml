@@ -1,0 +1,464 @@
+<Window x:Class="NovaStudio.MainWindow"
+xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+xmlns:controls="clr-namespace:NovaStudio.Controls"
+Title="Nova Studio"
+Width="1540"
+Height="940"
+MinWidth="1180"
+MinHeight="720"
+WindowStartupLocation="CenterScreen">
+<Grid>
+<Grid.RowDefinitions>
+<RowDefinition Height="58"/>
+<RowDefinition Height="*"/>
+<RowDefinition Height="250"/>
+<RowDefinition Height="28"/>
+</Grid.RowDefinitions>
+<Border Grid.Row="0" Background="#0F1219" BorderBrush="{StaticResource NovaBorder}" BorderThickness="0,0,0,1">
+<Grid Margin="18,0">
+<Grid.ColumnDefinitions>
+<ColumnDefinition Width="260"/>
+<ColumnDefinition Width="*"/>
+<ColumnDefinition Width="Auto"/>
+</Grid.ColumnDefinitions>
+<StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+<Border Width="30" Height="30" CornerRadius="9" Background="{StaticResource NovaAccent}" Margin="0,0,10,0">
+<TextBlock Text="N" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold" FontSize="16" Foreground="#07110C"/>
+</Border>
+<StackPanel>
+<TextBlock Text="NOVA STUDIO" FontSize="13" FontWeight="SemiBold"/>
+<TextBlock Text="Living architecture C development studio" Foreground="{StaticResource NovaMuted}" FontSize="10"/>
+</StackPanel>
+</StackPanel>
+<StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+<TextBlock x:Name="WorkspaceTitleText" Text="Nova Project" Foreground="#D8DEEA"/>
+<TextBlock x:Name="WorkspacePathText" Text=" / unsaved workspace" Foreground="{StaticResource NovaMuted}"/>
+</StackPanel>
+<StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+<Button Style="{StaticResource ToolbarButton}" Content="New Project" Click="NewProject_Click"/>
+<Button Style="{StaticResource ToolbarButton}" Content="Open Project" Click="OpenProject_Click"/>
+<Button Style="{StaticResource ToolbarButton}" Content="Save" Click="Save_Click"/>
+<Button Style="{StaticResource ToolbarButton}" Content="Save All" Click="SaveAll_Click"/>
+<Button Style="{StaticResource ToolbarButton}" Content="Compile" Click="Compile_Click"/>
+<Button Style="{StaticResource ToolbarButton}" Content="Center" Click="CenterGraph_Click"/>
+<Button Style="{StaticResource ToolbarButton}" Content="Reset" Click="Reset_Click"/>
+<Button Style="{StaticResource ToolbarButton}" Content="Step" Click="Step_Click"/>
+<Button Style="{StaticResource ToolbarButton}" Content="Step Into" Click="StepSource_Click"/>
+<Button Style="{StaticResource ToolbarButton}" Content="Step Over" Click="StepOver_Click"/>
+<Button Style="{StaticResource ToolbarButton}" Content="Step Out" Click="StepOut_Click"/>
+<Button Style="{StaticResource AccentButton}" Content="▶ Run / Continue" Click="Run_Click"/>
+</StackPanel>
+</Grid>
+</Border>
+<Grid Grid.Row="1">
+<Grid.ColumnDefinitions>
+
+<ColumnDefinition Width="250"/>
+<ColumnDefinition Width="*"/>
+<ColumnDefinition Width="315"/>
+</Grid.ColumnDefinitions>
+<Border Grid.Column="0" Background="{StaticResource NovaPanel}" BorderBrush="{StaticResource NovaBorder}" BorderThickness="0,0,1,0">
+<DockPanel Margin="14">
+<StackPanel DockPanel.Dock="Top">
+<TextBlock Text="PROJECT" Foreground="{StaticResource NovaMuted}" FontSize="10" FontWeight="SemiBold" Margin="4,4,0,12"/>
+<Border Background="{StaticResource NovaPanelRaised}" BorderBrush="{StaticResource NovaBorder}" BorderThickness="1" CornerRadius="9" Padding="10" Margin="0,0,0,12">
+<StackPanel>
+<TextBlock x:Name="ProjectCardTitle" Text="◈ Nova Project" FontWeight="SemiBold"/>
+<TextBlock x:Name="ProjectCardSubtitle" Text="C / NovaVM target · unsaved" Foreground="{StaticResource NovaMuted}" FontSize="11" Margin="20,3,0,0" TextTrimming="CharacterEllipsis"/>
+</StackPanel>
+</Border>
+<TextBlock Text="▾ Source" Margin="7,5" Foreground="#C6CCDA"/>
+<ListBox x:Name="ProjectFileList" Margin="4,2,0,4" Background="Transparent" BorderThickness="0" SelectionChanged="ProjectFileList_SelectionChanged">
+<ListBox.ItemContainerStyle>
+<Style TargetType="ListBoxItem">
+<Setter Property="Padding" Value="8,5"/>
+<Setter Property="Margin" Value="0,1"/>
+<Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+<Setter Property="Background" Value="Transparent"/>
+<Style.Triggers>
+<Trigger Property="IsSelected" Value="True"><Setter Property="Background" Value="#173126"/></Trigger>
+</Style.Triggers>
+</Style>
+</ListBox.ItemContainerStyle>
+<ListBox.ItemTemplate>
+<DataTemplate>
+<TextBlock Text="{Binding DisplayName}" Foreground="#B9C1D0" FontFamily="Consolas" FontSize="11" TextTrimming="CharacterEllipsis"/>
+</DataTemplate>
+</ListBox.ItemTemplate>
+</ListBox>
+<StackPanel Orientation="Horizontal" Margin="4,6,0,2">
+<Button Style="{StaticResource ToolbarButton}" Content="+ File" Click="AddFile_Click"/>
+<Button Style="{StaticResource ToolbarButton}" Content="Rename" Click="RenameFile_Click"/>
+<Button Style="{StaticResource ToolbarButton}" Content="Remove" Click="RemoveFile_Click"/>
+</StackPanel>
+<TextBlock Text="▾ Runtime" Margin="7,10,7,5" Foreground="#C6CCDA"/>
+<TextBlock Text=" NovaVM" Margin="7,5" Foreground="{StaticResource NovaGreen}"/>
+<TextBlock Text=" MMIO Console" Margin="7,5" Foreground="{StaticResource NovaMuted}"/>
+<TextBlock Text="▾ Debug" Margin="7,10,7,5" Foreground="#C6CCDA"/>
+<TextBlock Text=" Breakpoints" Margin="7,5" Foreground="{StaticResource NovaMuted}"/>
+<TextBlock Text=" Memory" Margin="7,5" Foreground="{StaticResource NovaMuted}"/>
+</StackPanel>
+<StackPanel DockPanel.Dock="Bottom">
+<Border Background="#0D1016" BorderBrush="{StaticResource NovaBorder}" BorderThickness="1" CornerRadius="9" Padding="10" Margin="0,0,0,8">
+<StackPanel>
+<TextBlock Text="GRAPH" Foreground="{StaticResource NovaMuted}" FontSize="9"/>
+<TextBlock x:Name="ZoomText" Text="100% zoom" Margin="0,4,0,0"/>
+<TextBlock Text="Wheel: zoom • Drag background: pan" Foreground="{StaticResource NovaMuted}" FontSize="9" Margin="0,5,0,0" TextWrapping="Wrap"/>
+</StackPanel>
+</Border>
+<Border Background="#0D1016" BorderBrush="{StaticResource NovaBorder}" BorderThickness="1" CornerRadius="9" Padding="10">
+<StackPanel>
+<TextBlock Text="TARGET" Foreground="{StaticResource NovaMuted}" FontSize="9"/>
+<TextBlock Text="NovaVM / 32-bit" Margin="0,4,0,0"/>
+
+<TextBlock Text="1 MiB address space" Foreground="{StaticResource NovaMuted}" FontSize="9" Margin="0,3,0,0"/>
+</StackPanel>
+</Border>
+</StackPanel>
+</DockPanel>
+</Border>
+<TabControl Grid.Column="1" Background="#0B0E14" BorderThickness="0" Padding="0">
+<TabItem Header="ARCHITECTURE">
+<Grid Background="#0B0E14">
+<controls:GraphCanvas x:Name="ArchitectureGraph" Focusable="True"/>
+<Border HorizontalAlignment="Left" VerticalAlignment="Top" Margin="18" Background="#0D1311E8" BorderBrush="{StaticResource NovaBorder}" BorderThickness="1" CornerRadius="10" Padding="11,8">
+<Grid>
+<Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+<StackPanel>
+<TextBlock Text="LIVING ARCHITECTURE" FontWeight="SemiBold" FontSize="10" Foreground="{StaticResource NovaGreen}"/>
+<TextBlock x:Name="GraphRuntimeText" Text="ARCHITECTURE · semantic graph" Foreground="#B6C2BD" FontFamily="Consolas" FontSize="9" Margin="0,3,0,0"/>
+<TextBlock Text="Double-click semantic nodes to open source. Runtime glow/call edges are derived from compiler + VM state." Foreground="{StaticResource NovaMuted}" FontSize="9" Margin="0,3,10,0"/>
+</StackPanel>
+<Button x:Name="GraphModeButton" Grid.Column="1" Style="{StaticResource ToolbarButton}" Content="Runtime overlay: ON" Click="GraphMode_Click" Margin="10,0,0,0" VerticalAlignment="Top"/>
+</Grid>
+</Border>
+</Grid>
+</TabItem>
+<TabItem x:Name="SourceTab" Header="SOURCE">
+<Grid Background="#090B10" Margin="0">
+<Grid.RowDefinitions>
+<RowDefinition Height="38"/>
+<RowDefinition Height="*"/>
+</Grid.RowDefinitions>
+<Border Background="#0F131A" BorderBrush="{StaticResource NovaBorder}" BorderThickness="0,0,0,1" Padding="12,0">
+<Grid>
+<Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+<TextBlock x:Name="SourceFileTitle" Text="src/main.c · NovaC Vol.21 project file" VerticalAlignment="Center" Foreground="#D7DDE8" FontSize="11"/>
+<TextBlock x:Name="CompileResultText" Grid.Column="1" Text="not compiled" VerticalAlignment="Center" Foreground="{StaticResource NovaMuted}" FontFamily="Consolas" FontSize="10"/>
+</Grid>
+</Border>
+<TextBox x:Name="SourceEditor" Grid.Row="1" TextChanged="SourceEditor_TextChanged" Background="#090B10" Foreground="#D8DEE9" BorderThickness="0" FontFamily="Consolas" FontSize="14" AcceptsReturn="True" AcceptsTab="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Padding="18" TextWrapping="NoWrap" IsInactiveSelectionHighlightEnabled="True"/>
+</Grid>
+</TabItem>
+</TabControl>
+<Border Grid.Column="2" Background="{StaticResource NovaPanel}" BorderBrush="{StaticResource NovaBorder}" BorderThickness="1,0,0,0">
+<ScrollViewer VerticalScrollBarVisibility="Auto">
+<StackPanel Margin="16">
+<TextBlock Text="RUNTIME INSPECTOR" Foreground="{StaticResource NovaMuted}" FontSize="10" FontWeight="SemiBold" Margin="0,3,0,14"/>
+<Grid Margin="0,0,0,12">
+<Grid.ColumnDefinitions>
+<ColumnDefinition Width="*"/>
+<ColumnDefinition Width="*"/>
+</Grid.ColumnDefinitions>
+<Border Grid.Column="0" Background="{StaticResource NovaPanelRaised}" BorderBrush="{StaticResource NovaBorder}" BorderThickness="1" CornerRadius="10" Padding="10" Margin="0,0,5,0">
+<StackPanel>
+<TextBlock Text="PC" Foreground="{StaticResource NovaMuted}" FontSize="9"/>
+<TextBlock x:Name="PcText" Text="0x00000000" FontFamily="Consolas" Margin="0,4,0,0"/>
+</StackPanel>
+</Border>
+<Border Grid.Column="1" Background="{StaticResource NovaPanelRaised}" BorderBrush="{StaticResource NovaBorder}" BorderThickness="1" CornerRadius="10" Padding="10" Margin="5,0,0,0">
+<StackPanel>
+<TextBlock Text="SP" Foreground="{StaticResource NovaMuted}" FontSize="9"/>
+<TextBlock x:Name="SpText" Text="0x000E0000" FontFamily="Consolas" Margin="0,4,0,0"/>
+</StackPanel>
+</Border>
+</Grid>
+
+<Border Background="#0E1118" BorderBrush="{StaticResource NovaBorder}" BorderThickness="1" CornerRadius="10" Padding="11" Margin="0,0,0,14">
+<StackPanel>
+<TextBlock Text="SELECTED NODE" Foreground="{StaticResource NovaMuted}" FontSize="9"/>
+<TextBlock x:Name="SelectedNodeTitle" Text="Nova Project" FontWeight="SemiBold" FontSize="14" Margin="0,6,0,0"/>
+<TextBlock x:Name="SelectedNodeSubtitle" Text="project root" Foreground="#9BA4B6" FontSize="10" Margin="0,3,0,0" TextWrapping="Wrap"/>
+</StackPanel>
+</Border>
+<TextBlock Text="REGISTERS" Foreground="{StaticResource NovaMuted}" FontSize="10" Margin="0,2,0,8"/>
+<ItemsControl x:Name="RegisterList">
+<ItemsControl.ItemTemplate>
+<DataTemplate>
+<Grid Margin="0,2">
+<Grid.ColumnDefinitions>
+<ColumnDefinition Width="42"/>
+<ColumnDefinition Width="*"/>
+</Grid.ColumnDefinitions>
+<TextBlock Text="{Binding Name}" Foreground="#929BAD" FontFamily="Consolas"/>
+<TextBlock Grid.Column="1" Text="{Binding Value}" Foreground="#E7EBF4" FontFamily="Consolas" HorizontalAlignment="Right"/>
+</Grid>
+</DataTemplate>
+</ItemsControl.ItemTemplate>
+</ItemsControl>
+<Border Background="#0E1118" BorderBrush="{StaticResource NovaBorder}" BorderThickness="1" CornerRadius="10" Padding="11" Margin="0,14,0,0">
+<StackPanel>
+<TextBlock Text="EXECUTION" Foreground="{StaticResource NovaMuted}" FontSize="9"/>
+<Grid Margin="0,7,0,0">
+<Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+<TextBlock Text="Instructions" Foreground="#9BA4B6"/>
+<TextBlock x:Name="InstructionText" Grid.Column="1" Text="0" HorizontalAlignment="Right" FontFamily="Consolas"/>
+</Grid>
+<Grid Margin="0,5,0,0">
+<Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+<TextBlock Text="Flags" Foreground="#9BA4B6"/>
+<TextBlock x:Name="FlagsText" Grid.Column="1" Text="----" HorizontalAlignment="Right" FontFamily="Consolas"/>
+</Grid>
+<Grid Margin="0,5,0,0">
+<Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+<TextBlock Text="Breakpoints" Foreground="#9BA4B6"/>
+<TextBlock x:Name="BreakpointCountText" Grid.Column="1" Text="0" HorizontalAlignment="Right" FontFamily="Consolas"/>
+</Grid>
+<Grid Margin="0,5,0,0">
+<Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+<TextBlock Text="Source" Foreground="#9BA4B6"/>
+<TextBlock x:Name="CurrentSourceText" Grid.Column="1" Text="—" HorizontalAlignment="Right" FontFamily="Consolas" FontSize="9"/>
+</Grid>
+</StackPanel>
+</Border>
+<Border Background="#0E1118" BorderBrush="{StaticResource NovaBorder}" BorderThickness="1" CornerRadius="10" Padding="11" Margin="0,12,0,0">
+<StackPanel>
+<TextBlock Text="WATCH · CURRENT FRAME" Foreground="{StaticResource NovaMuted}" FontSize="9"/>
+<ItemsControl x:Name="WatchList" Margin="0,7,0,0" MouseDoubleClick="WatchList_MouseDoubleClick">
+<ItemsControl.ItemTemplate>
+<DataTemplate>
+<Grid Margin="0,3">
+<Grid.ColumnDefinitions>
+<ColumnDefinition Width="62"/>
+
+<ColumnDefinition Width="38"/>
+<ColumnDefinition Width="*"/>
+</Grid.ColumnDefinitions>
+<StackPanel>
+<TextBlock Text="{Binding Name}" FontFamily="Consolas" FontSize="10" Foreground="#DCE2EC"/>
+<TextBlock Text="{Binding Type}" FontFamily="Consolas" FontSize="8" Foreground="#697386"/>
+<TextBlock Text="{Binding Scope}" FontFamily="Consolas" FontSize="7" Foreground="#596274"/>
+</StackPanel>
+<TextBlock Grid.Column="1" Text="{Binding Location}" FontFamily="Consolas" FontSize="9" Foreground="#7F899C" VerticalAlignment="Center"/>
+<TextBlock Grid.Column="2" Text="{Binding Value}" FontFamily="Consolas" FontSize="9" Foreground="#BFC7D5" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+</Grid>
+</DataTemplate>
+</ItemsControl.ItemTemplate>
+</ItemsControl>
+</StackPanel>
+</Border>
+<Border Background="#0E1118" BorderBrush="{StaticResource NovaBorder}" BorderThickness="1" CornerRadius="10" Padding="11" Margin="0,12,0,0">
+<StackPanel>
+<TextBlock Text="CALL STACK · SELECT A FRAME" Foreground="{StaticResource NovaMuted}" FontSize="9"/>
+<ListBox x:Name="CallStackList" Margin="0,7,0,0" Background="Transparent" BorderThickness="0" SelectionChanged="CallStackList_SelectionChanged">
+<ListBox.ItemContainerStyle>
+<Style TargetType="ListBoxItem">
+<Setter Property="Padding" Value="5"/>
+<Setter Property="Margin" Value="0,2"/>
+<Setter Property="Background" Value="Transparent"/>
+<Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+<Style.Triggers>
+<Trigger Property="IsSelected" Value="True">
+<Setter Property="Background" Value="#182131"/>
+</Trigger>
+</Style.Triggers>
+</Style>
+</ListBox.ItemContainerStyle>
+<ListBox.ItemTemplate>
+<DataTemplate>
+<Grid Margin="0,3">
+<Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+<StackPanel>
+<TextBlock Text="{Binding Function}" FontFamily="Consolas" FontSize="10" Foreground="#DCE2EC"/>
+<TextBlock Text="{Binding Range}" FontFamily="Consolas" FontSize="8" Foreground="#697386"/>
+</StackPanel>
+<TextBlock Grid.Column="1" Text="{Binding State}" FontFamily="Consolas" FontSize="8" Foreground="#9EA8B9" VerticalAlignment="Center"/>
+</Grid>
+</DataTemplate>
+</ListBox.ItemTemplate>
+</ListBox>
+</StackPanel>
+</Border>
+<Border Background="#0E1118" BorderBrush="{StaticResource NovaBorder}" BorderThickness="1" CornerRadius="10" Padding="11" Margin="0,12,0,0">
+<StackPanel>
+<TextBlock Text="HEAP" Foreground="{StaticResource NovaMuted}" FontSize="9"/>
+<Grid Margin="0,7,0,0">
+<Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+<TextBlock Text="Usage" Foreground="#9BA4B6"/>
+<TextBlock x:Name="HeapUsageText" Grid.Column="1" Text="0 B" HorizontalAlignment="Right" FontFamily="Consolas"/>
+</Grid>
+<ProgressBar x:Name="HeapUsageBar" Height="5" Minimum="0" Maximum="100" Value="0" Margin="0,7,0,7"/>
+<Grid Margin="0,2,0,0">
+
+<Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+<TextBlock Text="Blocks" Foreground="#9BA4B6"/>
+<TextBlock x:Name="HeapBlockCountText" Grid.Column="1" Text="1" HorizontalAlignment="Right" FontFamily="Consolas"/>
+</Grid>
+<Grid Margin="0,5,0,0">
+<Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+<TextBlock Text="Largest free" Foreground="#9BA4B6"/>
+<TextBlock x:Name="HeapLargestFreeText" Grid.Column="1" Text="0 B" HorizontalAlignment="Right" FontFamily="Consolas"/>
+</Grid>
+<ItemsControl x:Name="HeapBlockList" Margin="0,8,0,0">
+<ItemsControl.ItemTemplate>
+<DataTemplate>
+<Grid Margin="0,2">
+<Grid.ColumnDefinitions>
+<ColumnDefinition Width="86"/>
+<ColumnDefinition Width="60"/>
+<ColumnDefinition Width="*"/>
+</Grid.ColumnDefinitions>
+<TextBlock Text="{Binding Address}" FontFamily="Consolas" FontSize="9" Foreground="#7F899C"/>
+<TextBlock Grid.Column="1" Text="{Binding Size}" FontFamily="Consolas" FontSize="9" Foreground="#A8B0BF" HorizontalAlignment="Right"/>
+<TextBlock Grid.Column="2" Text="{Binding State}" FontFamily="Consolas" FontSize="9" Foreground="#C9D0DD" HorizontalAlignment="Right"/>
+</Grid>
+</DataTemplate>
+</ItemsControl.ItemTemplate>
+</ItemsControl>
+</StackPanel>
+</Border>
+</StackPanel>
+</ScrollViewer>
+</Border>
+</Grid>
+<Border Grid.Row="2" Background="#0E1117" BorderBrush="{StaticResource NovaBorder}" BorderThickness="0,1,0,0">
+<Grid Margin="14,9">
+<Grid.ColumnDefinitions>
+<ColumnDefinition Width="0.95*"/>
+<ColumnDefinition Width="1.25*"/>
+</Grid.ColumnDefinitions>
+<TabControl Grid.Column="0" Margin="0,0,12,0" Background="#0E1117" BorderThickness="0">
+<TabItem Header="CONSOLE">
+<Grid Background="#0E1117">
+<Grid.RowDefinitions><RowDefinition Height="28"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+<TextBlock Text="memory-mapped output @ 0x000F0000" Foreground="{StaticResource NovaMuted}" FontSize="10" VerticalAlignment="Center"/>
+<TextBox x:Name="ConsoleText" Grid.Row="1" Background="#090B10" Foreground="#D8DEE9" BorderBrush="{StaticResource NovaBorder}" BorderThickness="1" FontFamily="Consolas" FontSize="13" IsReadOnly="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Padding="12"/>
+</Grid>
+</TabItem>
+<TabItem x:Name="DiagnosticsTab" Header="DIAGNOSTICS">
+<Grid Background="#0E1117">
+<Grid.RowDefinitions><RowDefinition Height="28"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+<TextBlock Text="compiler / dependency diagnostics" Foreground="{StaticResource NovaMuted}" FontSize="10" VerticalAlignment="Center"/>
+<TextBox x:Name="DiagnosticsText" Grid.Row="1" Text="No compiler diagnostics." Background="#090B10" Foreground="#C9D4CF" BorderBrush="{StaticResource NovaBorder}" BorderThickness="1" FontFamily="Consolas" FontSize="11" IsReadOnly="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Padding="12"/>
+</Grid>
+</TabItem>
+</TabControl>
+<TabControl Grid.Column="1" Background="#0E1117" BorderThickness="0">
+<TabItem Header="DISASSEMBLY">
+<Grid Background="#0E1117">
+<Grid.RowDefinitions><RowDefinition Height="28"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+<TextBlock Text="double-click an instruction to toggle a native breakpoint" Foreground="{StaticResource NovaMuted}" FontSize="10" VerticalAlignment="Center"/>
+<ListView x:Name="DisassemblyList" Grid.Row="1" Background="#090B10" BorderBrush="{StaticResource NovaBorder}" BorderThickness="1" ItemsSource="{Binding}" MouseDoubleClick="DisassemblyList_MouseDoubleClick" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+<ListView.ItemContainerStyle>
+<Style TargetType="ListViewItem">
+<Setter Property="Padding" Value="0"/>
+<Setter Property="Margin" Value="0"/>
+<Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+<Setter Property="Background" Value="Transparent"/>
+
+<Setter Property="BorderThickness" Value="0"/>
+<Style.Triggers>
+<DataTrigger Binding="{Binding IsCurrent}" Value="True">
+<Setter Property="Background" Value="#123524"/>
+</DataTrigger>
+</Style.Triggers>
+</Style>
+</ListView.ItemContainerStyle>
+<ListView.ItemTemplate>
+<DataTemplate>
+<Grid Height="26" Margin="5,0">
+<Grid.ColumnDefinitions>
+<ColumnDefinition Width="22"/>
+<ColumnDefinition Width="82"/>
+<ColumnDefinition Width="155"/>
+<ColumnDefinition Width="*"/>
+</Grid.ColumnDefinitions>
+<TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="13">
+<TextBlock.Style>
+<Style TargetType="TextBlock">
+<Setter Property="Text" Value="○"/>
+<Setter Property="Foreground" Value="#596174"/>
+<Style.Triggers>
+<DataTrigger Binding="{Binding IsBreakpoint}" Value="True">
+<Setter Property="Text" Value="●"/>
+<Setter Property="Foreground" Value="#FF6B7A"/>
+</DataTrigger>
+</Style.Triggers>
+</Style>
+</TextBlock.Style>
+</TextBlock>
+<TextBlock Grid.Column="1" Text="{Binding AddressText}" FontFamily="Consolas" Foreground="#8F98A9" VerticalAlignment="Center"/>
+<TextBlock Grid.Column="2" Text="{Binding Bytes}" FontFamily="Consolas" Foreground="#6F788B" VerticalAlignment="Center" FontSize="11" TextTrimming="CharacterEllipsis"/>
+<TextBlock Grid.Column="3" Text="{Binding Text}" FontFamily="Consolas" Foreground="#E0E5EE" VerticalAlignment="Center"/>
+</Grid>
+</DataTemplate>
+</ListView.ItemTemplate>
+</ListView>
+</Grid>
+</TabItem>
+<TabItem Header="SOURCE MAP">
+<Grid Background="#0E1117">
+<Grid.RowDefinitions><RowDefinition Height="28"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+<TextBlock Text="double-click a mapped C statement to toggle a source breakpoint" Foreground="{StaticResource NovaMuted}" FontSize="10" VerticalAlignment="Center"/>
+<ListView x:Name="SourceMapList" Grid.Row="1" Background="#090B10" BorderBrush="{StaticResource NovaBorder}" BorderThickness="1" MouseDoubleClick="SourceMapList_MouseDoubleClick" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+<ListView.ItemContainerStyle>
+<Style TargetType="ListViewItem">
+<Setter Property="Padding" Value="0"/>
+<Setter Property="Margin" Value="0"/>
+<Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+<Setter Property="Background" Value="Transparent"/>
+<Style.Triggers>
+<DataTrigger Binding="{Binding IsCurrent}" Value="True">
+<Setter Property="Background" Value="#123524"/>
+</DataTrigger>
+</Style.Triggers>
+</Style>
+</ListView.ItemContainerStyle>
+<ListView.ItemTemplate>
+<DataTemplate>
+
+<Grid Height="28" Margin="5,0">
+<Grid.ColumnDefinitions>
+<ColumnDefinition Width="22"/>
+<ColumnDefinition Width="98"/>
+<ColumnDefinition Width="92"/>
+<ColumnDefinition Width="58"/>
+<ColumnDefinition Width="*"/>
+</Grid.ColumnDefinitions>
+<TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="13">
+<TextBlock.Style>
+<Style TargetType="TextBlock">
+<Setter Property="Text" Value="○"/>
+<Setter Property="Foreground" Value="#596174"/>
+<Style.Triggers>
+<DataTrigger Binding="{Binding IsBreakpoint}" Value="True">
+<Setter Property="Text" Value="●"/>
+<Setter Property="Foreground" Value="#FF6B7A"/>
+</DataTrigger>
+</Style.Triggers>
+</Style>
+</TextBlock.Style>
+</TextBlock>
+<TextBlock Grid.Column="1" Text="{Binding LocationText}" FontFamily="Consolas" Foreground="#A5ADBC" VerticalAlignment="Center" FontSize="10" TextTrimming="CharacterEllipsis"/>
+<TextBlock Grid.Column="2" Text="{Binding AddressText}" FontFamily="Consolas" Foreground="#778195" VerticalAlignment="Center" FontSize="10"/>
+<TextBlock Grid.Column="3" Text="{Binding KindText}" FontFamily="Consolas" Foreground="#8F98A9" VerticalAlignment="Center" FontSize="10"/>
+<TextBlock Grid.Column="4" Text="{Binding SourceText}" FontFamily="Consolas" Foreground="#E0E5EE" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+</Grid>
+</DataTemplate>
+</ListView.ItemTemplate>
+</ListView>
+</Grid>
+</TabItem>
+</TabControl>
+</Grid>
+</Border>
+<Border Grid.Row="3" Background="#11151C" BorderBrush="{StaticResource NovaBorder}" BorderThickness="0,1,0,0">
+<Grid Margin="12,0">
+<Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+<TextBlock x:Name="StatusText" Text="NovaVM initializing..." VerticalAlignment="Center" Foreground="{StaticResource NovaMuted}" FontSize="10"/>
+<TextBlock Grid.Column="1" Text="x64 • NovaVM/NovaC 0.21 • source → semantics → VM → debugger → living graph" VerticalAlignment="Center" Foreground="{StaticResource NovaMuted}" FontSize="10"/>
+</Grid>
+</Border>
+</Grid>
+</Window>

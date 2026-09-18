@@ -1,0 +1,22 @@
+{
+"version": 2,
+"name": "Nova Persistent Workspace Demo",
+"files": [
+{ "path": "src/main.c" },
+{ "path": "src/math.c" },
+{ "path": "src/state.c" },
+{ "path": "include/nova.h" },
+{ "path": "include/types.h" }
+],
+"graph": {
+"project": { "x": 40, "y": 250 },
+"source:src/main.c": { "x": 40, "y": 55 },
+"source:src/math.c": { "x": 40, "y": 170 },
+"source:src/state.c": { "x": 40, "y": 285 },
+"source:include/nova.h": { "x": 40, "y": 400 },
+"source:include/types.h": { "x": 40, "y": 515 },
+"function:main": { "x": 335, "y": 45 },
+"function:factorial": { "x": 335, "y": 137 },
+"global:global_bias": { "x": 620, "y": 300 }
+}
+}

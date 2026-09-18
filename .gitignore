@@ -1,0 +1,43 @@
+# CMake
+/build/
+/out/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+CTestTestfile.cmake
+Testing/
+*.vcxproj
+*.vcxproj.filters
+*.sln
+
+# .NET / Visual Studio
+.vs/
+**/bin/
+**/obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Test and coverage output
+TestResults/
+coverage/
+*.coverage
+*.coveragexml
+
+# Packages and release artifacts
+artifacts/
+release/
+*.zip
+*.7z
+*.nupkg
+
+# OS and editor files
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+.vscode/
+*.swp
+*.tmp
+*.log

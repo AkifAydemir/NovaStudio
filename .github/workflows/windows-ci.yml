@@ -1,0 +1,52 @@
+name: Windows CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-test:
+    runs-on: windows-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v7
+
+      - name: Set up .NET 8
+        uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Configure native projects
+        run: cmake -S . -B build -A x64
+
+      - name: Build native projects
+        run: cmake --build build --config Release
+
+      - name: Run native and compiler tests
+        run: ctest --test-dir build -C Release --output-on-failure
+
+      - name: Build Nova Studio
+        run: dotnet build studio/NovaStudio.csproj -c Release
+
+      - name: Verify runtime payload
+        shell: pwsh
+        run: |
+          $required = @(
+            'build/nova_vm.dll',
+            'build/nova_compiler.dll',
+            'build/novac.exe',
+            'studio/bin/Release/net8.0-windows/NovaStudio.exe',
+            'studio/bin/Release/net8.0-windows/nova_vm.dll',
+            'studio/bin/Release/net8.0-windows/nova_compiler.dll'
+          )
+          $missing = @($required | Where-Object { -not (Test-Path -LiteralPath $_) })
+          if ($missing.Count -ne 0) {
+            throw "Missing runtime artifacts: $($missing -join ', ')"
+          }

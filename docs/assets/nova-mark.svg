@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-labelledby="title desc">
+  <title id="title">Nova Studio mark</title>
+  <desc id="desc">A source bracket connected to a runtime graph and pulse.</desc>
+  <defs>
+    <linearGradient id="nova" x1="24" y1="20" x2="136" y2="140" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#8B5CF6"/>
+      <stop offset="1" stop-color="#22D3EE"/>
+    </linearGradient>
+  </defs>
+  <rect x="6" y="6" width="148" height="148" rx="34" fill="#0B1020"/>
+  <path d="M54 42 31 80l23 38M106 42l23 38-23 38" fill="none" stroke="url(#nova)" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M62 94 74 66l14 32 10-20" fill="none" stroke="#F8FAFC" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="74" cy="66" r="6" fill="#8B5CF6"/>
+  <circle cx="88" cy="98" r="6" fill="#22D3EE"/>
+  <circle cx="98" cy="78" r="6" fill="#F8FAFC"/>
+</svg>
