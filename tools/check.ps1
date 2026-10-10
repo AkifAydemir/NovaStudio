@@ -12,6 +12,7 @@ try {
     Invoke-Checked -Program cmake -Arguments @('--build', 'build', '--config', 'Release')
     Invoke-Checked -Program ctest -Arguments @('--test-dir', 'build', '-C', 'Release', '--output-on-failure')
     Invoke-Checked -Program dotnet -Arguments @('build', 'studio/NovaStudio.csproj', '-c', 'Release')
+    & (Join-Path $PSScriptRoot 'check-icon.ps1') -IconPath 'studio/Assets/nova.ico' -ExecutablePath 'studio/bin/Release/net8.0-windows/NovaStudio.exe'
     Write-Host 'Build and automated checks completed. Interactive UI is a separate check.'
 } finally {
     Pop-Location
