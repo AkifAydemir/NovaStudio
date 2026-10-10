@@ -27,6 +27,35 @@ memory, and control flow.
 > deliberately verifiable: the toolchain, tests, source, and validation boundary
 > are all available below.
 
+## Engineering work implemented in this repository
+
+Nova's core contribution is a source-to-execution toolchain whose intermediate
+state can be inspected from a desktop application.
+
+- **Compiler frontend and bytecode generation:**
+  [`nova_compiler.c`](compiler/src/nova_compiler.c) implements the bounded C
+  compilation path and produces diagnostics, executable bytecode and debug
+  metadata. It is not a frontend that merely invokes a system compiler.
+- **Inspectable virtual machine:** [`nova_vm.c`](native/src/nova_vm.c) owns
+  instruction execution and runtime state. The Studio reads that state through
+  a public native ABI, so stepping and register views reflect the VM being run.
+- **One compilation, multiple views:** compiler metadata feeds source maps and
+  the architecture graph, while runtime observations connect execution back to
+  those views. This avoids maintaining an unrelated hand-authored diagram.
+- **Bounded allocation strategy:** the compiler uses fixed-capacity structures
+  in an OS-backed workspace (`VirtualAlloc` on Windows, `mmap` on supported
+  Unix-like builds). Capacity limits are part of the contract, not a claim of
+  unlimited language or project support.
+
+**Why this split?** C keeps the compiler/VM boundary explicit; C# and WPF handle
+desktop interaction through P/Invoke. That introduces ABI and payload-packaging
+work, but lets the native core be exercised without launching the UI.
+[`test_project.c`](compiler/tests/test_project.c) and
+[`test_debug_steps.c`](compiler/tests/test_debug_steps.c) are useful starting
+points for reviewing multi-file compilation and debugging regressions. The
+latest local check passed **22 CTest cases** and the WPF Release build; the
+default example was also observed finishing with console output `A`.
+
 ## What it demonstrates
 
 - A native C11 compiler and VM with stable C ABIs.

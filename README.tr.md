@@ -22,6 +22,34 @@ Genel amaçlı bir IDE veya ISO C standardına bütünüyle uyan bir toolchain o
 
 > **Proje bağlamı:** Nova Studio, lise yıllarımda geliştirdiğim bağımsız bir mühendislik projesidir. Toolchain, testler, kaynak kod ve doğrulama sınırları bu repoda incelenebilir.
 
+## Bu repoda geliştirilen mühendislik
+
+Nova'nın temel çalışması, ara durumları masaüstünden incelenebilen bir
+kaynak-koddan-yürütmeye toolchain oluşturmaktır.
+
+- **Derleyici frontend'i ve bytecode üretimi:** [nova_compiler.c](compiler/src/nova_compiler.c)
+  sınırlı C dil yüzeyini işler; tanılar, bytecode ve debug metadata'sı üretir.
+  Yalnızca sistemdeki başka bir derleyiciyi çağıran bir arayüz değildir.
+- **İncelenebilir VM:** [nova_vm.c](native/src/nova_vm.c), komut yürütmeyi ve
+  runtime durumunu yönetir. Studio bu durumu native ABI üzerinden okur;
+  adımlama ve register görünümleri çalıştırılan VM'ye bağlıdır.
+- **Tek derlemeden farklı görünümler:** aynı metadata source map ve mimari
+  grafiğini besler; runtime gözlemleri yürütmeyi bu görünümlere bağlar.
+  Ayrı, elle hazırlanmış bir program diyagramı tutulmaz.
+- **Sınırları belirli bellek yönetimi:** derleyici sabit kapasiteli yapıları
+  OS destekli çalışma alanında tutar: Windows'ta `VirtualAlloc`, desteklenen
+  Unix benzeri derlemelerde `mmap`. Kapasite sınırları açık sözleşmedir;
+  sınırsız proje veya tam dil desteği iddia edilmez.
+
+**Neden bu ayrım?** Derleyici/VM sınırı C ile açık tutulur; masaüstü etkileşimi
+C# ve WPF ile P/Invoke üzerinden kurulur. ABI ve DLL paketleme işi eklenir,
+ama native çekirdek UI açılmadan sınanabilir.
+[test_project.c](compiler/tests/test_project.c) ve
+[test_debug_steps.c](compiler/tests/test_debug_steps.c), çok dosyalı derleme
+ve debug regresyonlarını incelemek için iyi başlangıç noktalarıdır.
+Son yerel kontrolde **22 CTest testi** ve WPF Release derlemesi geçti;
+varsayılan örneğin konsola `A` yazıp tamamlandığı da gözlendi.
+
 ## Neyi gösteriyor?
 
 - Kararlı C ABI’leri üzerinden çalışan native C11 compiler ve VM.
