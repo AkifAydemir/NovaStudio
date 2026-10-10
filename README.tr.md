@@ -6,6 +6,12 @@
 
 [English](README.md)
 
+[İlk kullanım ve sorun giderme](docs/GETTING_STARTED.md) · [Son yerel doğrulama](docs/REVIEW_2026-10-10.md)
+
+Kaynak derleme/test: `powershell -NoProfile -File tools/check.ps1`.
+Taşınabilir önizleme ZIP'i üretme: `powershell -NoProfile -File tools/package.ps1`.
+Paketler imzasız önizlemedir; temiz bilgisayarda kurulum doğrulaması yapılmış sayılmaz.
+
 Nova Studio, bir C programının kaynak koddan çalışmaya uzanan yolunu görünür kılan, öncelikle Windows için geliştirilmiş bir sistem programlama ortamıdır. Sınırları belirli bir C compiler, bytecode VM, native debugger ve canlı mimari grafiğini tek masaüstü uygulamasında birleştirir.
 
 Genel amaçlı bir IDE veya ISO C standardına bütünüyle uyan bir toolchain olmayı hedeflemez. Amaç; kaynak dosyalar, compiler metadata’sı, üretilen bytecode, VM durumu, bellek ve kontrol akışı arasındaki normalde görünmeyen bağlantıları incelemektir.

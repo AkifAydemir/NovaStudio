@@ -135,7 +135,7 @@ public sealed class GraphCanvas : FrameworkElement
         if (runtimeEdge)
         {
             dc.DrawGeometry(null, new Pen(new SolidColorBrush(Color.FromArgb(42, 80, 229, 154)), 7.0), geometry);
-            dc.DrawGeometry(null, new Pen(new SolidColorBrush(Color.FromRgb(91, 226, 164)), 2.4), geometry);
+            dc.DrawGeometry(null, new Pen(new SolidColorBrush(Color.FromRgb(142, 166, 155)), 2.4), geometry);
         }
         else
         {
@@ -154,7 +154,7 @@ public sealed class GraphCanvas : FrameworkElement
         FlowDirection.LeftToRight,
         _bodyTypeface,
         8,
-        new SolidColorBrush(runtimeEdge ? Color.FromRgb(105, 231, 174) : Color.FromRgb(103, 116, 128)),
+        new SolidColorBrush(runtimeEdge ? Color.FromRgb(165, 185, 174) : Color.FromRgb(103, 116, 128)),
         VisualTreeHelper.GetDpi(this).PixelsPerDip);
         var x = (a.X + b.X) / 2.0 - text.Width / 2.0;
         var y = (a.Y + b.Y) / 2.0 - text.Height / 2.0;
@@ -171,15 +171,13 @@ public sealed class GraphCanvas : FrameworkElement
         var fillColor = NodeFill(node.Kind, isActivity);
         var fill = new SolidColorBrush(fillColor);
         var borderColor = isRuntime
-        ? Color.FromRgb(91, 226, 164)
+        ? Color.FromRgb(165, 185, 174)
         : isFocused
-        ? Color.FromRgb(103, 205, 157)
+        ? Color.FromRgb(142, 166, 155)
         : isSelected
         ? Color.FromRgb(126, 151, 163)
         : Color.FromRgb(43, 54, 64);
         var border = new Pen(new SolidColorBrush(borderColor), isRuntime || isFocused || isSelected ? 2.0 : 1.0);
-        if (isRuntime)
-            DrawNodeGlow(dc, node, rect);
         if (IsCircular(node.Kind))
             dc.DrawEllipse(fill, border, NodeCenter(node), node.Width / 2.0, node.Height / 2.0);
         else
@@ -207,17 +205,9 @@ public sealed class GraphCanvas : FrameworkElement
             _ => Color.FromRgb(19, 24, 29)
         };
     }
-    private void DrawNodeGlow(DrawingContext dc, GraphNode node, Rect rect)
-    {
-        var glow = new Pen(new SolidColorBrush(Color.FromArgb(55, 71, 219, 139)), 9.0);
-        if (IsCircular(node.Kind))
-            dc.DrawEllipse(null, glow, NodeCenter(node), node.Width / 2.0 + 2, node.Height / 2.0 + 2);
-        else
-            dc.DrawRoundedRectangle(null, glow, rect, NodeCornerRadius(node.Kind) + 2, NodeCornerRadius(node.Kind) + 2);
-    }
     private void DrawNodeText(DrawingContext dc, GraphNode node, bool isRuntime, bool isActivity)
     {
-        var activeColor = isRuntime ? Color.FromRgb(105, 231, 174) : Color.FromRgb(125, 139, 147);
+        var activeColor = isRuntime ? Color.FromRgb(165, 185, 174) : Color.FromRgb(150, 160, 165);
         if (IsCircular(node.Kind))
         {
             var kind = Formatted(node.Kind.ToString().ToUpperInvariant(), 8, _bodyTypeface, activeColor, node.Width - 18, TextAlignment.Center);
@@ -255,7 +245,7 @@ public sealed class GraphCanvas : FrameworkElement
         dc.DrawEllipse(new SolidColorBrush(Color.FromRgb(255, 102, 116)), new Pen(new SolidColorBrush(Color.FromRgb(255, 189, 196)), 1), center, 5, 5);
     }
     private static bool IsCircular(GraphNodeKind kind) => kind is GraphNodeKind.Runtime or GraphNodeKind.Cpu;
-    private static double NodeCornerRadius(GraphNodeKind kind) => kind is GraphNodeKind.Memory or GraphNodeKind.Io or GraphNodeKind.Global ? 9 : 14;
+    private static double NodeCornerRadius(GraphNodeKind kind) => 3;
     private static Point NodeCenter(GraphNode node) => new(node.X + node.Width / 2.0, node.Y + node.Height / 2.0);
     private static string EdgeKey(string fromId, string toId) => fromId + "\u001f" + toId;
     protected override void OnMouseWheel(MouseWheelEventArgs e)
