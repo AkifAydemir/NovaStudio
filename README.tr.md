@@ -16,7 +16,7 @@ Nova Studio, bir C programının kaynak koddan çalışmaya uzanan yolunu görü
 
 Genel amaçlı bir IDE veya ISO C standardına bütünüyle uyan bir toolchain olmayı hedeflemez. Amaç; kaynak dosyalar, compiler metadata’sı, üretilen bytecode, VM durumu, bellek ve kontrol akışı arasındaki normalde görünmeyen bağlantıları incelemektir.
 
-![Örnek workspace, canlı mimari grafiği, VM register’ları ve bytecode disassembly görünümüyle Nova Studio](docs/assets/nova-studio-ui.png)
+![Soluk yeşil paletle Nova Studio Release: örnek çalışma alanı, mimari grafiği ve konsolda A çıktısı](docs/assets/nova-palette-20261010.png)
 
 *Dâhil edilen örnek workspace ile Release build’den alınmış gerçek WPF arayüzü; mock-up değildir.*
 
